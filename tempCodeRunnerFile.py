@@ -1,1 +1,0 @@
-if is_valid_location(board, col):

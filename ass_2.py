@@ -312,7 +312,7 @@ YELLOW = (255, 255, 0)
 PLAYER = 0
 AGENT = 1
 PLAYER_PIECE = 1
-AGENT_PIECE = 2
+AI_PIECE = 2
 
 # Initialize the game
 pygame.init()
@@ -414,7 +414,7 @@ def evaluate_window(window, piece):
         score += 2
 
     # AI's piece in the window
-    opponent_piece = PLAYER_PIECE if piece == AGENT_PIECE else AGENT_PIECE
+    opponent_piece = PLAYER_PIECE if piece == AI_PIECE else AI_PIECE
     if window.count(opponent_piece) == 3 and window.count(0) == 1:
         score -= 4
 
@@ -461,7 +461,7 @@ def evaluate_board(board, piece):
 
 def is_terminal_node(board):
     # Check if the game has reached a terminal state
-    return winning_move(board, PLAYER_PIECE) or winning_move(board, AGENT_PIECE) or len(get_valid_locations(board)) == 0
+    return winning_move(board, PLAYER_PIECE) or winning_move(board, AI_PIECE) or len(get_valid_locations(board)) == 0
 
 
 def get_valid_locations(board):
@@ -475,7 +475,7 @@ def get_valid_locations(board):
 
 def get_opponent_piece(piece):
     # Get the opponent's piece
-    return PLAYER_PIECE if piece == AGENT_PIECE else AGENT_PIECE
+    return PLAYER_PIECE if piece == AI_PIECE else AI_PIECE
 
 
 def minimax(board, depth, alpha, beta, maximizing_player, piece):
@@ -484,14 +484,14 @@ def minimax(board, depth, alpha, beta, maximizing_player, piece):
 
     if depth == 0 or is_terminal:
         if is_terminal:
-            if winning_move(board, AGENT_PIECE):
+            if winning_move(board, AI_PIECE):
                 return float("inf")
             elif winning_move(board, PLAYER_PIECE):
                 return float("-inf")
             else:
                 return 0
         else:
-            return evaluate_board(board, AGENT_PIECE)
+            return evaluate_board(board, AI_PIECE)
 
     if maximizing_player:
         max_eval = float("-inf")
@@ -555,7 +555,7 @@ def draw_board(board):
                     (int(c * SQUARE_SIZE + SQUARE_SIZE / 2), height - int(r * SQUARE_SIZE + SQUARE_SIZE / 2)),
                     RADIUS,
                 )
-            elif board[r][c] == AGENT_PIECE:
+            elif board[r][c] == AI_PIECE:
                 pygame.draw.circle(
                     screen,
                     YELLOW,
@@ -608,15 +608,15 @@ while not game_over:
 
         if turn == AGENT and not game_over:
             # Agent's turn
-            col = get_best_move(board, AGENT_PIECE)
+            col = get_best_move(board, AI_PIECE)
 
             if is_valid_location(board, col):
                 pygame.time.wait(500)
 
                 row = get_next_open_row(board, col)
-                drop_piece(board, row, col, AGENT_PIECE)
+                drop_piece(board, row, col, AI_PIECE)
 
-                if winning_move(board, AGENT_PIECE):
+                if winning_move(board, AI_PIECE):
                     label = myfont.render("Agent wins!", 1, YELLOW)
                     screen.blit(label, (40, 10))
                     game_over = True
